@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Search</title>
+		<style>
+			/* Your CSS */
+			:root {
+				--primary: #84abe6;
+				--primary-200: #dae3ed;
+				--primary-100: #f4f7fb;
+				--secondary: #50687f;
+			}
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			body {
+				font-size: 1rem;
+				line-height: 1.5;
+				color: var(--secondary);
+			}
+			header {
+				display: block;
+				background-color: var(--primary-200);
+				padding: 1rem 3rem;
+			}
+			/* form and input */
+			form {
+				display: block;
+				position: relative;
+				max-width: 450px;
+			}
+			.form-control {
+				display: block;
+				position: relative;
+				width: 100%;
+				background-color: var(--primary-100);
+				padding: 0.5rem 1rem;
+				border-radius: 0.25rem;
+				font-size: 1.2rem;
+				color: inherit;
+				border: 1px solid var(--primary);
+				background-clip: padding-box;
+				transition: box-shadow 0.15s ease-in-out;
+			}
+			.form-control:focus {
+				outline: 0;
+				box-shadow: 0 0 0 1px var(--primary);
+			}
+			.search-icon {
+				display: block;
+				position: relative;
+				background: transparent;
+				width: 1rem;
+				height: 1rem;
+				border-radius: 50%;
+				border: 2px solid var(--secondary);
+			}
+			.search-icon:after {
+				content: "";
+				display: block;
+				position: absolute;
+				width: 3px;
+				height: 8px;
+				top: 100%;
+				left: calc(100% - 2px);
+				background: var(--secondary);
+				transform: skew(30deg);
+			}
+			.form-control[name="search"] {
+				padding-right: calc(2rem + 2px);
+				font-weight: 300;
+			}
+			.form-control[name="search"] + i {
+				position: absolute;
+				top: 0.5rem;
+				right: calc(1rem + 3px);
+			}
+
+			/* result panel*/
+			.results-panel {
+				background-color: #fff;
+				min-width: 800px;
+				max-width: 50%;
+				margin-top: 5px;
+				padding: 0 2rem 2rem;
+				position: absolute;
+				box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+				opacity: 0;
+				visibility: hidden;
+				transition: all ease-in-out 0.3s;
+			}
+			.results-panel.show {
+				opacity: 1;
+				visibility: visible;
+			}
+
+			.results-panel .sector {
+				margin-top: 1rem;
+			}
+			.results-panel .content {
+				display: flex;
+				gap: 1rem;
+				flex-wrap: wrap;
+			}
+			.item {
+				display: flex;
+				width: calc(50% - 1rem);
+				margin-top: 10px;
+			}
+			.item img {
+				display: block;
+				width: 50px;
+				height: 50px;
+				object-fit: cover;
+			}
+			.item .title {
+				width: calc(100% - 35px);
+				font-weight: 400;
+				margin: 0;
+				margin-left: 1rem;
+			}
+		</style>
+
+		<script>
+			const items = [
+				{
+					id: 1,
+					image:
+						"https://images.folloze.com/image/upload/v1450949154/folloze-image-gallery/campaign/heroimage01.png",
+					title: "Space Mobile The Final Frontier",
+				},
+				{
+					id: 2,
+					image:
+						"https://images.folloze.com/image/upload/v1450949153/folloze-image-gallery/campaign/heroimage13.png",
+					title: "What if They Let You Run The Hubble Mobile",
+				},
+				{
+					id: 3,
+					image:
+						"https://images.folloze.com/image/upload/v1450949153/folloze-image-gallery/campaign/heroimage04.png",
+					title: "Shooting Stars Mobile",
+				},
+				{
+					id: 4,
+					image:
+						"https://images.folloze.com/image/upload/v1450949149/folloze-image-gallery/campaign/heroimage11.png",
+					title: "Make Money Online Through Advertising",
+				},
+				{
+					id: 5,
+					image:
+						"https://images.folloze.com/image/upload/v1450949143/folloze-image-gallery/campaign/heroimage08.png",
+					title: "What Makes Flyers Unrivaled",
+				},
+				{
+					id: 6,
+					image:
+						"https://images.folloze.com/image/upload/v1450948643/folloze-image-gallery/campaign/heroimage05.png",
+					title: "Adwords Keywork Research For Beginners",
+				},
+			];
+
+			const boards = [
+				{
+					id: 1,
+					image:
+						"https://images.folloze.com/image/upload/v1458832608/folloze-image-gallery/customer/customer_03.png",
+					title: "The Baiscs Of Buying A Telescope Mobile",
+				},
+				{
+					id: 2,
+					image:
+						"https://images.folloze.com/image/upload/v1450949395/folloze-image-gallery/customer/customer_02.png",
+					title: "The Universe Through A Child Eyes Mobile",
+				},
+				{
+					id: 3,
+					image:
+						"https://images.folloze.com/image/upload/v1450949032/folloze-image-gallery/customer/customer_04.png",
+					title: "Home Business Advertising Ideas Mobile",
+				},
+				{
+					id: 4,
+					image:
+						"https://images.folloze.com/image/upload/v1450949131/folloze-image-gallery/group/group_01.png",
+					title:
+						"Finally A Top Mobile Way You Can Google Adwords Pay Per Clicks",
+				},
+				{
+					id: 5,
+					image:
+						"https://images.folloze.com/image/upload/v1450949052/folloze-image-gallery/group/group_02.png",
+					title: "Study 800 Numbers Still Popula With Advertisers Mobile",
+				},
+				{
+					id: 6,
+					image:
+						"https://images.folloze.com/image/upload/v1450948179/folloze-image-gallery/generic/generic_06.png",
+					title: "Using Banner Stands To Increase Trade Show Traffic",
+				},
+			];
+			/* Your JavaScript */
+			const SEARCH_DELAY = 300;
+			class Post {
+				constructor({ id, title, image }) {
+					this.id = id;
+					this.title = title;
+					this.image = image;
+				}
+				render() {
+					const item = document.createElement("div");
+					item.classList.add("item");
+					item.innerHTML = `
+						<img src="${this.image}" alt="${this.title}">
+			                 	<h4 class="title">${this.title}</h4>
+			             	`;
+					item.addEventListener("click", () => this.handleClick());
+					return item;
+				}
+			}
+
+			class Item extends Post {
+				handleClick() {
+					console.log(`Item #${this.id} was clicked!`);
+				}
+			}
+
+			class Board extends Post {
+				handleClick() {
+					console.log(`Board #${this.id} was clicked!`);
+				}
+			}
+
+			class UIManager {
+				constructor() {
+					this.searchInput = document.querySelector("#searchInput");
+					this.resultsPanel = document.querySelector(".results-panel");
+					this.timer = null;
+					//eventListener for search input
+					this.searchInput.addEventListener("keyup", ({ target }) => {
+						this.managaeResults(target.value);
+					});
+
+					//eventListiner for clicking on document
+					document.addEventListener("click", (e) => this.documentClicked(e));
+				}
+
+				documentClicked({ target }) {
+					const isInsdePanel = this.resultsPanel.contains(target);
+					const isSearchInput = this.searchInput.contains(target);
+
+					if (!isInsdePanel && !isSearchInput) {
+						return this.toggleResultsPanel("hide");
+					}
+				}
+
+				managaeResults(word) {
+					if (this.timer) clearTimeout(this.timer);
+					word = word.trim().toLowerCase();
+					if (word.length === 0) return this.toggleResultsPanel("hide");
+					this.timer = setTimeout(() => {
+						this.resultsPanel.innerHTML = "";
+						const { Items = [], Boards = [] } = this.searchString(word);
+						this.render(
+							"Items",
+							Items.map((item) => new Item(item))
+						);
+
+						this.render(
+							"Boards",
+							Boards.map((board) => new Board(board))
+						);
+						if (this.resultsPanel.childNodes.length > 0)
+							return this.toggleResultsPanel();
+
+						this.toggleResultsPanel("hide");
+					}, SEARCH_DELAY);
+				}
+
+				render(type, printArray) {
+					if (printArray.length == 0) return null;
+					const sector = this.buildSector(type, printArray.length);
+					const content = sector.querySelector(".content");
+
+					printArray.map((post) => content.appendChild(post.render()));
+					this.resultsPanel.appendChild(sector);
+					return sector;
+				}
+
+				buildSector(type, count = 0) {
+					if (count === 0) return;
+					//create sector div
+					const sector = document.createElement("div");
+					sector.classList.add("sector");
+
+					const sectorTitle = document.createElement("h3");
+					sectorTitle.innerHTML = `${type} (${count})`;
+					sector.appendChild(sectorTitle);
+
+					// create content div by type
+					const content = document.createElement("div");
+					content.classList.add("content");
+
+					sector.appendChild(content);
+
+					return sector;
+				}
+
+				toggleResultsPanel(action = "show") {
+					if (action === "show") {
+						return this.resultsPanel.classList.add("show");
+					}
+					this.resultsPanel.innerHTML = "";
+					return this.resultsPanel.classList.remove("show");
+				}
+
+				searchString(word) {
+					const filteredItems = items.filter((item) =>
+						item.title.toLowerCase().includes(word)
+					);
+
+					const filteredBoards = boards.filter((board) =>
+						board.title.toLowerCase().includes(word)
+					);
+
+					return { Items: filteredItems, Boards: filteredBoards };
+				}
+			}
+
+			//main event lisitner document load
+			document.addEventListener("DOMContentLoaded", function () {
+				new UIManager();
+			});
+		</script>
+	</head>
+
+	<body>
+		<!-- Your HTML elements -->
+		<header>
+			<form>
+				<div class="input-container">
+					<input
+						id="searchInput"
+						class="form-control"
+						type="text"
+						name="search"
+					/>
+					<i class="search-icon"></i>
+				</div>
+			</form>
+			<div class="results-panel"></div>
+		</header>
+	</body>
+</html>
