@@ -249,6 +249,10 @@
 						this.managaeResults(target.value);
 					});
 
+					// form on sumbit
+					const form = document.querySelector("#searchForm");
+					form.addEventListener("submit", (e) => e.preventDefault());
+
 					//eventListiner for clicking on document
 					document.addEventListener("click", (e) => this.documentClicked(e));
 				}
@@ -345,7 +349,7 @@
 	<body>
 		<!-- Your HTML elements -->
 		<header>
-			<form>
+			<form id="searchForm">
 				<div class="input-container">
 					<input
 						id="searchInput"
